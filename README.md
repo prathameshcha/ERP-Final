@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # School ERP — Mother Teresa Foundation School
 
 A full-stack ERP management system for schools, built with **Express + Prisma** (backend) and **React + Vite** (frontend).
@@ -188,3 +189,6 @@ npm run build            # Build both frontend & backend
 ## License
 
 Private — All rights reserved.
+=======
+# ERP-Final
+>>>>>>> 5d00a80392cdb7a612220454047992ba09b004f6

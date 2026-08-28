@@ -21,6 +21,8 @@ import { printReportCard } from '@/utils/printReportCard';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { BilingualReportCardTemplate } from '@/components/reportcard/BilingualReportCardTemplate';
 import { PrimaryReportCardTemplate } from '@/components/reportcard/PrimaryReportCardTemplate';
+import { SecondaryReportCardTemplate } from '@/components/reportcard/SecondaryReportCardTemplate';
+import { SecondaryReportCardEditor } from '@/components/reportcard/SecondaryReportCardEditor';
 import { REMARKS_BANK, RemarkItem } from '@/utils/remarks';
 
 export default function ReportCardManagement() {
@@ -405,7 +407,40 @@ export default function ReportCardManagement() {
     }
   };
 
+  const isSecondaryClass = (name?: string) => {
+    if (!name) return false;
+    return /^(8|8th|9|9th|10|10th|VIII|IX|X)$/i.test(name.trim());
+  };
+
+  const handleSaveSecondary = async (payload: { studentData: any; sections: any[] }) => {
+    if (!activeReportCard) return;
+    setSavingEdit(true);
+    try {
+      await reportCardsApi.updateSections(activeReportCard.id, {
+        studentData: payload.studentData,
+        sections: payload.sections,
+      });
+
+      // Update active report card in memory
+      const updatedRc = {
+        ...activeReportCard,
+        student: { ...activeReportCard.student, ...payload.studentData },
+        sections: payload.sections,
+      };
+      setActiveReportCard(updatedRc);
+
+      toast.success('Report card details, marks & evaluation saved!');
+      fetchReportCards();
+      setModalTab('preview');
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Failed to save changes');
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   // Live updated object for template preview
+
   const livePreviewObj = activeReportCard
     ? {
         ...activeReportCard,
@@ -704,7 +739,17 @@ export default function ReportCardManagement() {
           {modalTab === 'preview' && (
             <div className="max-h-[75vh] overflow-y-auto bg-slate-200 p-4 rounded-lg flex justify-center">
               <div id="admin-report-card-print-area">
-                {activeReportCard?.class?.reportCardTemplate === 'KG' || ['Jr.KG', 'Sr.KG'].includes(activeReportCard?.class?.name) ? (
+                {isSecondaryClass(activeReportCard?.class?.name) ? (
+                  <SecondaryReportCardTemplate
+                    reportCard={livePreviewObj}
+                    student={activeReportCard?.student}
+                    classNameDetails={activeReportCard?.class}
+                    divisionDetails={activeReportCard?.division}
+                    academicYearDetails={activeReportCard?.academicYear}
+                    marksData={marksData}
+                    attendanceData={attendanceData}
+                  />
+                ) : activeReportCard?.class?.reportCardTemplate === 'KG' || ['Jr.KG', 'Sr.KG'].includes(activeReportCard?.class?.name) ? (
                   <BilingualReportCardTemplate
                     reportCard={livePreviewObj}
                     student={activeReportCard?.student}
@@ -729,8 +774,18 @@ export default function ReportCardManagement() {
             </div>
           )}
 
-          {/* Tab 2: Edit Remarks & Assessment */}
-          {modalTab === 'edit' && (
+          {/* Tab 2: Edit Section */}
+          {modalTab === 'edit' && isSecondaryClass(activeReportCard?.class?.name) && (
+            <div className="max-h-[75vh] overflow-y-auto p-1">
+              <SecondaryReportCardEditor
+                reportCard={activeReportCard}
+                onSave={handleSaveSecondary}
+                saving={savingEdit}
+              />
+            </div>
+          )}
+
+          {modalTab === 'edit' && !isSecondaryClass(activeReportCard?.class?.name) && (
             <div className="max-h-[75vh] overflow-y-auto space-y-6 pr-1">
               <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900 flex justify-between items-center">
                 <span>

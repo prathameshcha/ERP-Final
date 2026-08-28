@@ -37,3 +37,6 @@ coverage/
 
 # Docker volumes
 pgdata/
+
+# Zip Archives
+*.zip

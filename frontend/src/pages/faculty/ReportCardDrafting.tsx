@@ -17,6 +17,8 @@ import toast from 'react-hot-toast';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { BilingualReportCardTemplate } from '@/components/reportcard/BilingualReportCardTemplate';
 import { PrimaryReportCardTemplate } from '@/components/reportcard/PrimaryReportCardTemplate';
+import { SecondaryReportCardTemplate } from '@/components/reportcard/SecondaryReportCardTemplate';
+import { SecondaryReportCardEditor } from '@/components/reportcard/SecondaryReportCardEditor';
 import { REMARKS_BANK, RemarkItem } from '@/utils/remarks';
 import { printReportCard } from '@/utils/printReportCard';
 import apiClient from '@/api/client';
@@ -104,41 +106,46 @@ export default function ReportCardDrafting() {
     }
   }, [selectedStudentId, selectedAssignment]);
 
-  const loadStudentReportCard = (studentId: string) => {
+  const loadStudentReportCard = async (studentId: string) => {
     if (!selectedAssignment) return;
-    setReportCard(null);
-    reportCardsApi.getAll({
-      studentId,
-      academicYearId: selectedAssignment.academicYearId,
-    }).then((res) => {
-      if (res.data.success && res.data.data.length > 0) {
-        const rc = res.data.data[0];
+
+    try {
+      const [rcRes, mRes, aRes] = await Promise.all([
+        reportCardsApi.getAll({
+          studentId,
+          academicYearId: selectedAssignment.academicYearId,
+        }),
+        marksApi.getByStudent(studentId, {
+          academicYearId: selectedAssignment.academicYearId,
+        }),
+        attendanceApi.getStudentAttendance(studentId, selectedAssignment.academicYearId),
+      ]);
+
+      if (rcRes.data?.success && rcRes.data.data?.length > 0) {
+        const rc = rcRes.data.data[0];
         setReportCard(rc);
         populateFormFromReportCard(rc);
       } else {
         setReportCard(null);
         resetForm();
       }
-    }).catch((err) => console.error(err));
 
-    // Fetch marks & attendance
-    marksApi.getByStudent(studentId, {
-      academicYearId: selectedAssignment.academicYearId,
-    }).then((mRes: any) => {
-      if (mRes.data.success) setMarksData(mRes.data.data);
-    }).catch((e: any) => console.error(e));
+      if (mRes.data?.success) {
+        setMarksData(mRes.data.data);
+      }
 
-    attendanceApi.getStudentAttendance(studentId, selectedAssignment.academicYearId)
-      .then((aRes: any) => {
-        if (aRes.data.success && aRes.data.data.stats) {
-          setAttendanceData({
-            workingDays: aRes.data.data.stats.workingDays,
-            presentDays: aRes.data.data.stats.presentDays,
-            percentage: `${aRes.data.data.stats.percentage}%`,
-          });
-        }
-      }).catch((e: any) => console.error(e));
+      if (aRes.data?.success && aRes.data.data?.stats) {
+        setAttendanceData({
+          workingDays: aRes.data.data.stats.workingDays,
+          presentDays: aRes.data.data.stats.presentDays,
+          percentage: `${aRes.data.data.stats.percentage}%`,
+        });
+      }
+    } catch (err) {
+      console.error('Error loading report card bundle:', err);
+    }
   };
+
 
   const populateFormFromReportCard = (rc: any) => {
     const newSec: any = {
@@ -372,6 +379,24 @@ export default function ReportCardDrafting() {
 
   const currentStudent = students.find((s) => s.id === selectedStudentId);
   const isKG = selectedAssignment?.class?.name?.toLowerCase().includes('kg');
+  const isSecondary = /^(8|8th|9|9th|10|10th|VIII|IX|X)$/i.test((selectedAssignment?.class?.name || '').trim());
+
+  const handleSaveSecondary = async (payload: { studentData: any; sections: any[] }) => {
+    if (!reportCard) return;
+    setSaving(true);
+    try {
+      await reportCardsApi.updateSections(reportCard.id, {
+        studentData: payload.studentData,
+        sections: payload.sections,
+      });
+      toast.success('Report card updated successfully!');
+      loadStudentReportCard(selectedStudentId);
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Failed to save changes');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -556,25 +581,34 @@ export default function ReportCardDrafting() {
 
           {/* Right Column: Editable Remarks Form (8 cols) */}
           <div className="lg:col-span-8 space-y-6">
-            <Card>
-              <CardHeader className="flex flex-row justify-between items-center pb-3">
-                <div>
-                  <CardTitle className="text-base font-semibold flex items-center gap-2">
-                    <Edit3 className="w-5 h-5 text-indigo-600" /> Remarks & Development Assessment
-                  </CardTitle>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Choose up to 3 remarks per box from the Remark Bank or write custom feedback
-                  </p>
-                </div>
-                <Button
-                  onClick={handleSaveReportCard}
-                  disabled={saving}
-                  size="sm"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-xs gap-1.5"
-                >
-                  <Save className="w-3.5 h-3.5" /> {saving ? 'Saving...' : 'Save & Update'}
-                </Button>
-              </CardHeader>
+            {isSecondary ? (
+              <SecondaryReportCardEditor
+                key={reportCard?.id || selectedStudentId}
+                reportCard={reportCard}
+                onSave={handleSaveSecondary}
+                saving={saving}
+              />
+            ) : (
+              <Card>
+                <CardHeader className="flex flex-row justify-between items-center pb-3">
+                  <div>
+                    <CardTitle className="text-base font-semibold flex items-center gap-2">
+                      <Edit3 className="w-5 h-5 text-indigo-600" /> Remarks & Development Assessment
+                    </CardTitle>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Choose up to 3 remarks per box from the Remark Bank or write custom feedback
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleSaveReportCard}
+                    disabled={saving}
+                    size="sm"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-xs gap-1.5"
+                  >
+                    <Save className="w-3.5 h-3.5" /> {saving ? 'Saving...' : 'Save & Update'}
+                  </Button>
+                </CardHeader>
+
 
               <CardContent className="space-y-6 text-xs">
                 {/* Section A */}
@@ -985,6 +1019,7 @@ export default function ReportCardDrafting() {
                 </div>
               </CardContent>
             </Card>
+            )}
           </div>
         </div>
       )}
@@ -1013,7 +1048,7 @@ export default function ReportCardDrafting() {
                   modalTab === 'edit' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
               >
-                Edit Remarks (Choose 3 per Box)
+                {isSecondary ? 'Edit Report Card' : 'Edit Remarks (Choose 3 per Box)'}
               </button>
             </div>
 
@@ -1029,8 +1064,18 @@ export default function ReportCardDrafting() {
 
           {modalTab === 'preview' ? (
             <div className="max-h-[75vh] overflow-y-auto p-4 bg-slate-100 rounded-xl flex justify-center">
-              <div id="printable-report-card" className="w-full max-w-[210mm] bg-white shadow-md p-6">
-                {isKG ? (
+              <div id="printable-report-card" className="w-full max-w-[297mm] bg-white shadow-md p-2">
+                {isSecondary ? (
+                  <SecondaryReportCardTemplate
+                    reportCard={reportCard}
+                    student={currentStudent}
+                    classNameDetails={selectedAssignment?.class}
+                    divisionDetails={selectedAssignment?.division}
+                    academicYearDetails={selectedAssignment?.academicYear}
+                    marksData={marksData}
+                    attendanceData={attendanceData}
+                  />
+                ) : isKG ? (
                   <BilingualReportCardTemplate
                     reportCard={reportCard}
                     student={currentStudent}
@@ -1055,62 +1100,74 @@ export default function ReportCardDrafting() {
             </div>
           ) : (
             <div className="max-h-[75vh] overflow-y-auto p-2 space-y-4">
-              <p className="text-xs text-slate-500">
-                You can select up to 3 remarks per box from the Remark Bank or write directly into any slot.
-              </p>
-              {/* Sections A to E quick view */}
-              {['A', 'B', 'C', 'D', 'E'].map((k) => (
-                <div key={k} className="p-3 bg-slate-50 border rounded-xl space-y-2 text-xs">
-                  <div className="flex justify-between items-center font-bold text-slate-800">
-                    <span>Section {k}</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleOpenRemarksModal(k, 'progress')}
-                      className="text-[11px] h-6 px-2 text-indigo-600"
-                    >
-                      <ListChecks className="w-3 h-3 mr-1" /> Remarks Bank
+              {isSecondary ? (
+                <SecondaryReportCardEditor
+                  key={reportCard?.id || selectedStudentId}
+                  reportCard={reportCard}
+                  onSave={handleSaveSecondary}
+                  saving={saving}
+                />
+              ) : (
+                <>
+                  <p className="text-xs text-slate-500">
+                    You can select up to 3 remarks per box from the Remark Bank or write directly into any slot.
+                  </p>
+                  {/* Sections A to E quick view */}
+                  {['A', 'B', 'C', 'D', 'E'].map((k) => (
+                    <div key={k} className="p-3 bg-slate-50 border rounded-xl space-y-2 text-xs">
+                      <div className="flex justify-between items-center font-bold text-slate-800">
+                        <span>Section {k}</span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleOpenRemarksModal(k, 'progress')}
+                          className="text-[11px] h-6 px-2 text-indigo-600"
+                        >
+                          <ListChecks className="w-3 h-3 mr-1" /> Remarks Bank
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <span className="text-[10px] text-slate-500 block">Progress Lines:</span>
+                          {[0, 1, 2].map((idx) => (
+                            <Input
+                              key={`modal-p-${k}-${idx}`}
+                              value={sectionsData[k].progress[idx]}
+                              onChange={(e) => handleLineChange(k, 'progress', idx, e.target.value)}
+                              className="h-7 text-xs"
+                            />
+                          ))}
+                        </div>
+                        <div className="space-y-1">
+                          <span className="text-[10px] text-slate-500 block">Challenges Lines:</span>
+                          {[0, 1, 2].map((idx) => (
+                            <Input
+                              key={`modal-c-${k}-${idx}`}
+                              value={sectionsData[k].challenges[idx]}
+                              onChange={(e) => handleLineChange(k, 'challenges', idx, e.target.value)}
+                              className="h-7 text-xs"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-end gap-2 pt-2 border-t">
+                    <Button variant="outline" onClick={() => setIsPreviewOpen(false)}>
+                      Close
+                    </Button>
+                    <Button onClick={handleSaveReportCard} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
+                      {saving ? 'Saving...' : 'Save & Refresh Preview'}
                     </Button>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-slate-500 block">Progress Lines:</span>
-                      {[0, 1, 2].map((idx) => (
-                        <Input
-                          key={`modal-p-${k}-${idx}`}
-                          value={sectionsData[k].progress[idx]}
-                          onChange={(e) => handleLineChange(k, 'progress', idx, e.target.value)}
-                          className="h-7 text-xs"
-                        />
-                      ))}
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-slate-500 block">Challenges Lines:</span>
-                      {[0, 1, 2].map((idx) => (
-                        <Input
-                          key={`modal-c-${k}-${idx}`}
-                          value={sectionsData[k].challenges[idx]}
-                          onChange={(e) => handleLineChange(k, 'challenges', idx, e.target.value)}
-                          className="h-7 text-xs"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              <div className="flex justify-end gap-2 pt-2 border-t">
-                <Button variant="outline" onClick={() => setIsPreviewOpen(false)}>
-                  Close
-                </Button>
-                <Button onClick={handleSaveReportCard} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
-                  {saving ? 'Saving...' : 'Save & Refresh Preview'}
-                </Button>
-              </div>
+                </>
+              )}
             </div>
           )}
         </div>
       </Modal>
+
 
       {/* Remarks Bank Picker Modal */}
       <Modal

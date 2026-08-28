@@ -63,7 +63,7 @@ router.get('/', authorize('ADMIN', 'FACULTY', 'STUDENT'), async (req: AuthReques
     const rcs = await prisma.reportCard.findMany({
       where,
       include: {
-        student: { select: { id: true, name: true, rollNo: true, admissionNo: true } },
+        student: true,
         class: { select: { id: true, name: true, reportCardTemplate: true } },
         division: { select: { id: true, name: true } },
         academicYear: { select: { id: true, name: true } },
@@ -110,17 +110,55 @@ router.post('/', authorize('ADMIN', 'FACULTY'), async (req, res, next) => {
 
 router.put('/:id/sections', authorize('ADMIN', 'FACULTY'), async (req, res, next) => {
   try {
-    const { sections } = req.body;
+    const { sections, studentData } = req.body;
+
+    // Optional student info & photo update if provided
+    if (studentData) {
+      const rc = await prisma.reportCard.findUnique({ where: { id: req.params.id } });
+      if (rc && rc.studentId) {
+        await prisma.student.update({
+          where: { id: rc.studentId },
+          data: {
+            ...(studentData.name && { name: studentData.name }),
+            ...(studentData.rollNo !== undefined && { rollNo: studentData.rollNo }),
+            ...(studentData.admissionNo !== undefined && { admissionNo: studentData.admissionNo }),
+            ...(studentData.photo !== undefined && { photo: studentData.photo }),
+            ...(studentData.fatherName !== undefined && { fatherName: studentData.fatherName }),
+            ...(studentData.fatherOccupation !== undefined && { fatherOccupation: studentData.fatherOccupation }),
+            ...(studentData.motherName !== undefined && { motherName: studentData.motherName }),
+            ...(studentData.motherOccupation !== undefined && { motherOccupation: studentData.motherOccupation }),
+            ...(studentData.motherTongue !== undefined && { motherTongue: studentData.motherTongue }),
+            ...(studentData.dob !== undefined && { dob: studentData.dob ? new Date(studentData.dob) : null }),
+            ...(studentData.parentContact !== undefined && { parentContact: studentData.parentContact }),
+            ...(studentData.weight !== undefined && { weight: String(studentData.weight) }),
+            ...(studentData.height !== undefined && { height: String(studentData.height) }),
+            ...(studentData.address !== undefined && { address: studentData.address }),
+          }
+        });
+      }
+    }
+
     if (Array.isArray(sections)) {
       for (const s of sections) {
         await prisma.reportCardSection.upsert({
           where: { reportCardId_sectionKey: { reportCardId: req.params.id, sectionKey: s.sectionKey } },
-          update: { progressShown: s.progressShown, challengesFaced: s.challengesFaced },
-          create: { reportCardId: req.params.id, sectionKey: s.sectionKey, sectionTitle: s.sectionTitle, progressShown: s.progressShown, challengesFaced: s.challengesFaced }
+          update: { 
+            progressShown: s.progressShown, 
+            challengesFaced: s.challengesFaced,
+            additionalData: s.additionalData !== undefined ? s.additionalData : undefined
+          },
+          create: { 
+            reportCardId: req.params.id, 
+            sectionKey: s.sectionKey, 
+            sectionTitle: s.sectionTitle, 
+            progressShown: s.progressShown, 
+            challengesFaced: s.challengesFaced,
+            additionalData: s.additionalData !== undefined ? s.additionalData : undefined
+          }
         });
       }
     }
-    res.json({ success: true, message: 'Sections updated' });
+    res.json({ success: true, message: 'Sections and details updated' });
   } catch (err) { next(err); }
 });
 

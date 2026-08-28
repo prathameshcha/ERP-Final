@@ -40,6 +40,9 @@ import HomeworkManagement from './pages/faculty/HomeworkManagement';
 import FacultyTimetable from './pages/faculty/FacultyTimetable';
 import FacultyNotices from './pages/faculty/FacultyNotices';
 
+// Profile settings
+import ProfileSettings from './pages/ProfileSettings';
+
 // Public
 import VerifyReportCard from './pages/public/VerifyReportCard';
 
@@ -78,6 +81,7 @@ export default function App() {
           <Route path="analytics" element={<AnalyticsDashboard />} />
           <Route path="audit-logs" element={<AuditLogViewer />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="profile" element={<ProfileSettings />} />
         </Route>
         
         {/* Faculty Routes */}
@@ -90,6 +94,7 @@ export default function App() {
           <Route path="homework" element={<HomeworkManagement />} />
           <Route path="timetable" element={<FacultyTimetable />} />
           <Route path="notices" element={<FacultyNotices />} />
+          <Route path="profile" element={<ProfileSettings />} />
         </Route>
         
         <Route path="/" element={<Navigate to="/login" replace />} />

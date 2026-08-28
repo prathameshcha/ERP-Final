@@ -5,7 +5,7 @@ import { Header } from '@/components/ui/Header';
 import { 
   LayoutDashboard, Users, Calendar, Settings, Shield, BookOpen, GraduationCap, 
   ClipboardCheck, FileSpreadsheet, Award, Sliders, FileText, BookMarked, Megaphone, 
-  Clock, BarChart2, Trophy, ArrowUpCircle
+  Clock, BarChart2, Trophy, ArrowUpCircle, User
 } from 'lucide-react';
 
 const adminNavItems = [
@@ -29,6 +29,7 @@ const adminNavItems = [
   { icon: Calendar, label: 'Calendar / Holidays', href: '/admin/calendar' },
   { icon: BarChart2, label: 'Analytics', href: '/admin/analytics' },
   { icon: Settings, label: 'Settings', href: '/admin/settings' },
+  { icon: User, label: 'Profile Settings', href: '/admin/profile' },
 ];
 
 export function AdminLayout() {

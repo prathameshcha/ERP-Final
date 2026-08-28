@@ -84,5 +84,26 @@ export const REMARKS_BANK: { [category: string]: RemarkItem[] } = {
     { id: 'sup6', en: 'Time management during written examinations.', mr: 'परीक्षेत वेळेचे नियोजन शिकण्याची गरज.' },
     { id: 'sup7', en: 'Sustained focus and attention during classroom lectures.', mr: 'अभ्यासातील एकाग्रता वाढवण्याचा प्रयत्न करणे.' },
     { id: 'sup8', en: 'Confidence building while presenting on stage.', mr: 'मंचावर सादरीकरण करताना आत्मविश्वास वाढवणे.' },
-  ]
+  ],
+  SECONDARY_SPECIAL_PROGRESS: [
+    { id: 'ssp1', en: 'Demonstrates strong conceptual understanding and analytical thinking in subjects.', mr: 'संकल्पनांचे उत्कृष्ट आकलन व विश्लेषणात्मक विचारक्षमता दर्शवितो/दर्शविते.' },
+    { id: 'ssp2', en: 'Consistent academic performance with dedicated problem-solving skills.', mr: 'सातत्यपूर्ण शैक्षणिक कामगिरी व समस्या सोडविण्याचे उत्तम कौशल्य.' },
+    { id: 'ssp3', en: 'Shows active participation in classroom discussions and scientific experiments.', mr: 'वर्गातील चर्चा व विज्ञान प्रयोगांमध्ये अत्यंत सक्रिय सहभाग.' },
+    { id: 'ssp4', en: 'Excellent writing skills, clear expression, and neat presentation in tests.', mr: 'चांगले लेखन कौशल्य, विचार मांडणी आणि परीक्षांमध्ये टापटीप सादरीकरण.' },
+    { id: 'ssp5', en: 'Independent learner with a proactive approach towards assignments and projects.', mr: 'स्वावलंबीपणे अभ्यास करणारा/करणारी व प्रकल्पांमध्ये पुढाकार घेणारा/घेणारी.' },
+    { id: 'ssp6', en: 'Exhibits disciplined study habits, regular homework completion, and punctuality.', mr: 'शिस्तबद्ध अभ्यासाची सवय, नियमित स्वाध्याय पूर्ण करणे व वेळेचे पालन.' },
+    { id: 'ssp7', en: 'Displays leadership qualities, team cooperation, and positive classroom conduct.', mr: 'उत्कृष्ट नेतृत्वगुण, सहकाऱ्यांशी सहकार्य आणि सकारात्मक वर्तन.' },
+    { id: 'ssp8', en: 'Good multilingual communication and confident presentation abilities.', mr: 'चांगले बहुभाषिक संभाषण आणि आत्मविश्वासाने सादरीकरण करण्याची क्षमता.' },
+  ],
+  SECONDARY_IMPROVEMENT_NEEDED: [
+    { id: 'sin1', en: 'Needs regular practice in mathematical calculations and numerical problem solving.', mr: 'गणितीय आकडेमोड व उदाहरणे सोडविण्याचा नियमित सराव आवश्यक आहे.' },
+    { id: 'sin2', en: 'Requires consistent revision of scientific definitions, diagrams, and formulae.', mr: 'विज्ञानातील व्याख्या, आकृत्या व सूत्रांचे नियमित उजळणी करणे गरजेचे आहे.' },
+    { id: 'sin3', en: 'Focus on improving writing speed and time management during examination.', mr: 'परीक्षेदरम्यान वेळेचे नियोजन आणि लेखनाचा वेग वाढविण्यावर भर द्यावा.' },
+    { id: 'sin4', en: 'Needs to develop daily reading habit to enhance vocabulary and comprehension.', mr: 'शब्दसंग्रह आणि वाचन आकलन सुधारण्यासाठी दररोज वाचनाची सवय लावावी.' },
+    { id: 'sin5', en: 'Encouraged to actively participate and ask questions in classroom sessions.', mr: 'वर्गातील संवादात अधिक सक्रिय सहभाग घेऊन शंका विचारण्यास प्रोत्साहन द्यावे.' },
+    { id: 'sin6', en: 'Needs to maintain neatness and complete all subject notebooks on time.', mr: 'वहीतील टापटीपपणा टिकवून सर्व विषयांचा अभ्यास वेळेवर पूर्ण करावा.' },
+    { id: 'sin7', en: 'Requires guidance for deeper conceptual clarity in core topics.', mr: 'महत्त्वाच्या विषयांमध्ये संकल्पनांची स्पष्टता वाढविण्यासाठी अधिक मार्गदर्शनाची गरज आहे.' },
+    { id: 'sin8', en: 'Focus on regular attendance and attentive listening during class lectures.', mr: 'नियमित उपस्थिती आणि वर्गात लक्षपूर्वक ऐकण्यावर अधिक लक्ष केंद्रित करावे.' },
+  ],
 };
+

@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { BilingualReportCardTemplate } from '@/components/reportcard/BilingualReportCardTemplate';
 import { PrimaryReportCardTemplate } from '@/components/reportcard/PrimaryReportCardTemplate';
+import { SecondaryReportCardTemplate } from '@/components/reportcard/SecondaryReportCardTemplate';
 import { printReportCard } from '@/utils/printReportCard';
 
 export default function MyReportCards() {
@@ -163,7 +164,15 @@ export default function MyReportCards() {
 
           <div className="max-h-[75vh] overflow-y-auto bg-slate-200 p-4 rounded-lg flex justify-center">
             <div id="student-report-card-print-area">
-              {activeReportCard?.class?.reportCardTemplate === 'KG' || ['Jr.KG', 'Sr.KG'].includes(activeReportCard?.class?.name) ? (
+              {/^(8|8th|9|9th|10|10th|VIII|IX|X)$/i.test((activeReportCard?.class?.name || '').trim()) ? (
+                <SecondaryReportCardTemplate
+                  reportCard={activeReportCard}
+                  student={studentProfile}
+                  classNameDetails={activeReportCard?.class}
+                  divisionDetails={activeReportCard?.division}
+                  academicYearDetails={activeReportCard?.academicYear}
+                />
+              ) : activeReportCard?.class?.reportCardTemplate === 'KG' || ['Jr.KG', 'Sr.KG'].includes(activeReportCard?.class?.name) ? (
                 <BilingualReportCardTemplate
                   reportCard={activeReportCard}
                   student={studentProfile}
@@ -182,6 +191,7 @@ export default function MyReportCards() {
               )}
             </div>
           </div>
+
         </div>
       </Modal>
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../ui/Sidebar';
 import Header from '../ui/Header';
-import { LayoutDashboard, School, ClipboardCheck, Edit3, FileBarChart, BookMarked, Clock, Megaphone } from 'lucide-react';
+import { LayoutDashboard, School, ClipboardCheck, Edit3, FileBarChart, BookMarked, Clock, Megaphone, User } from 'lucide-react';
 
 const facultyNavigation = [
   { name: 'Dashboard', href: '/faculty', icon: LayoutDashboard },
@@ -13,6 +13,7 @@ const facultyNavigation = [
   { name: 'Homework', href: '/faculty/homework', icon: BookMarked },
   { name: 'Timetable', href: '/faculty/timetable', icon: Clock },
   { name: 'Notices', href: '/faculty/notices', icon: Megaphone },
+  { name: 'Profile Settings', href: '/faculty/profile', icon: User },
 ];
 
 export default function FacultyLayout() {

@@ -100,5 +100,112 @@ export const REMARKS_BANK: { [category: string]: RemarkItem[] } = {
     { id: 'sup8', en: 'Confidence building while presenting on stage.', mr: 'मंचावर सादरीकरण करताना आत्मविश्वास वाढवणे.' },
     { id: 'sup9', en: 'Parental supervision during evening study routines.', mr: 'संध्याकाळच्या अभ्यासाच्या वेळी पालकांचे मार्गदर्शन.' },
     { id: 'sup10', en: 'Encouraging independent completion of daily homework.', mr: 'स्वाध्यायाचे काम स्वतःहून पूर्ण करण्यास प्रोत्साहन देणे.' },
-  ]
+  ],
+  SECONDARY_SPECIAL_PROGRESS: [
+    { id: 'ssp1', en: 'Demonstrates strong conceptual understanding and analytical thinking in subjects.', mr: 'संकल्पनांचे उत्कृष्ट आकलन व विश्लेषणात्मक विचारक्षमता दर्शवितो/दर्शविते.' },
+    { id: 'ssp2', en: 'Consistent academic performance with dedicated problem-solving skills.', mr: 'सातत्यपूर्ण शैक्षणिक कामगिरी व समस्या सोडविण्याचे उत्तम कौशल्य.' },
+    { id: 'ssp3', en: 'Shows active participation in classroom discussions and scientific experiments.', mr: 'वर्गातील चर्चा व विज्ञान प्रयोगांमध्ये अत्यंत सक्रिय सहभाग.' },
+    { id: 'ssp4', en: 'Excellent writing skills, clear expression, and neat presentation in tests.', mr: 'चांगले लेखन कौशल्य, विचार मांडणी आणि परीक्षांमध्ये टापटीप सादरीकरण.' },
+    { id: 'ssp5', en: 'Independent learner with a proactive approach towards assignments and projects.', mr: 'स्वावलंबीपणे अभ्यास करणारा/करणारी व प्रकल्पांमध्ये पुढाकार घेणारा/घेणारी.' },
+    { id: 'ssp6', en: 'Exhibits disciplined study habits, regular homework completion, and punctuality.', mr: 'शिस्तबद्ध अभ्यासाची सवय, नियमित स्वाध्याय पूर्ण करणे व वेळेचे पालन.' },
+    { id: 'ssp7', en: 'Displays leadership qualities, team cooperation, and positive classroom conduct.', mr: 'उत्कृष्ट नेतृत्वगुण, सहकाऱ्यांशी सहकार्य आणि सकारात्मक वर्तन.' },
+    { id: 'ssp8', en: 'Good multilingual communication and confident presentation abilities.', mr: 'चांगले बहुभाषिक संभाषण आणि आत्मविश्वासाने सादरीकरण करण्याची क्षमता.' },
+  ],
+  SECONDARY_IMPROVEMENT_NEEDED: [
+    { id: 'sin1', en: 'Needs regular practice in mathematical calculations and numerical problem solving.', mr: 'गणितीय आकडेमोड व उदाहरणे सोडविण्याचा नियमित सराव आवश्यक आहे.' },
+    { id: 'sin2', en: 'Requires consistent revision of scientific definitions, diagrams, and formulae.', mr: 'विज्ञानातील व्याख्या, आकृत्या व सूत्रांचे नियमित उजळणी करणे गरजेचे आहे.' },
+    { id: 'sin3', en: 'Focus on improving writing speed and time management during examination.', mr: 'परीक्षेदरम्यान वेळेचे नियोजन आणि लेखनाचा वेग वाढविण्यावर भर द्यावा.' },
+    { id: 'sin4', en: 'Needs to develop daily reading habit to enhance vocabulary and comprehension.', mr: 'शब्दसंग्रह आणि वाचन आकलन सुधारण्यासाठी दररोज वाचनाची सवय लावावी.' },
+    { id: 'sin5', en: 'Encouraged to actively participate and ask questions in classroom sessions.', mr: 'वर्गातील संवादात अधिक सक्रिय सहभाग घेऊन शंका विचारण्यास प्रोत्साहन द्यावे.' },
+    { id: 'sin6', en: 'Needs to maintain neatness and complete all subject notebooks on time.', mr: 'वहीतील टापटीपपणा टिकवून सर्व विषयांचा अभ्यास वेळेवर पूर्ण करावा.' },
+    { id: 'sin7', en: 'Requires guidance for deeper conceptual clarity in core topics.', mr: 'महत्त्वाच्या विषयांमध्ये संकल्पनांची स्पष्टता वाढविण्यासाठी अधिक मार्गदर्शनाची गरज आहे.' },
+    { id: 'sin8', en: 'Focus on regular attendance and attentive listening during class lectures.', mr: 'नियमित उपस्थिती आणि वर्गात लक्षपूर्वक ऐकण्यावर अधिक लक्ष केंद्रित करावे.' },
+  ],
 };
+
+export interface CompetencyDomain {
+  id: number;
+  titleEn: string;
+  titleMr: string;
+  items: {
+    id: number;
+    titleEn: string;
+    titleMr: string;
+  }[];
+}
+
+export const COMPETENCY_DOMAINS: CompetencyDomain[] = [
+  {
+    id: 1,
+    titleEn: '1. Scholastic',
+    titleMr: 'शैक्षणिक विकास',
+    items: [
+      { id: 1, titleEn: 'Concept Understanding', titleMr: 'संकल्पना समजण्याची क्षमता' },
+      { id: 2, titleEn: 'Subject Knowledge', titleMr: 'विषयाचे ज्ञान' },
+      { id: 3, titleEn: 'Problem-Solving Ability', titleMr: 'समस्या सोडविण्याची क्षमता' },
+      { id: 4, titleEn: 'Critical Thinking', titleMr: 'विचारपूर्वक आणि सखोल विचार करण्याची क्षमता' },
+      { id: 5, titleEn: 'Independent Learning', titleMr: 'स्वावलंबीपणे शिकण्याची क्षमता' },
+    ],
+  },
+  {
+    id: 2,
+    titleEn: '2. Language & Communication',
+    titleMr: 'भाषा व संवाद कौशल्ये',
+    items: [
+      { id: 1, titleEn: 'Listening Skills', titleMr: 'ऐकण्याची क्षमता' },
+      { id: 2, titleEn: 'Speaking Skills', titleMr: 'बोलण्याची क्षमता' },
+      { id: 3, titleEn: 'Reading Comprehension', titleMr: 'वाचन आकलन क्षमता' },
+      { id: 4, titleEn: 'Writing Skills', titleMr: 'लेखन कौशल्य' },
+      { id: 5, titleEn: 'Presentation Skills', titleMr: 'सादरीकरण कौशल्य' },
+    ],
+  },
+  {
+    id: 3,
+    titleEn: '3. Critical Thinking & Problem-Solving',
+    titleMr: 'विचारशक्ती व समस्या सोडविणे',
+    items: [
+      { id: 1, titleEn: 'Observation Skills', titleMr: 'निरीक्षण करण्याची क्षमता' },
+      { id: 2, titleEn: 'Logical Reasoning', titleMr: 'तर्कशुद्ध विचार' },
+      { id: 3, titleEn: 'Decision Making', titleMr: 'निर्णय घेण्याची क्षमता' },
+      { id: 4, titleEn: 'Questioning / Inquiry', titleMr: 'प्रश्न विचारण्याची व शोध घेण्याची वृत्ती' },
+      { id: 5, titleEn: 'Evaluation Skills', titleMr: 'मूल्यांकन करण्याची क्षमता' },
+    ],
+  },
+  {
+    id: 4,
+    titleEn: '4. Personal, Social & Ethical',
+    titleMr: 'वैयक्तिक, सामाजिक व नैतिक विकास',
+    items: [
+      { id: 1, titleEn: 'Responsibility', titleMr: 'जबाबदारीची जाणीव' },
+      { id: 2, titleEn: 'Confidence / Self-awareness', titleMr: 'आत्मविश्वास व स्व-जाणीव' },
+      { id: 3, titleEn: 'Teamwork / Cooperation', titleMr: 'संघभावना व सहकार्य' },
+      { id: 4, titleEn: 'Honesty / Integrity', titleMr: 'प्रामाणिकपणा व सचोटी' },
+      { id: 5, titleEn: 'Emotional Control', titleMr: 'भावनांवर नियंत्रण' },
+    ],
+  },
+  {
+    id: 5,
+    titleEn: '5. Career Orientation & Life Skills',
+    titleMr: 'करिअर व जीवन कौशल्ये',
+    items: [
+      { id: 1, titleEn: 'Career Awareness', titleMr: 'करिअरची जाणीव' },
+      { id: 2, titleEn: 'Goal Setting', titleMr: 'उद्दिष्ट निश्चित करणे' },
+      { id: 3, titleEn: 'Self-Management', titleMr: 'स्वतःचे व्यवस्थापन' },
+      { id: 4, titleEn: 'Leadership & Entrepreneurship', titleMr: 'नेतृत्व व उद्योजकता' },
+      { id: 5, titleEn: 'Future Readiness', titleMr: 'भविष्यासाठी तयारी' },
+    ],
+  },
+  {
+    id: 6,
+    titleEn: '6. Physical & Emotional Well-being',
+    titleMr: 'शारीरिक व भावनिक स्वास्थ्य',
+    items: [
+      { id: 1, titleEn: 'Physical Fitness', titleMr: 'शारीरिक तंदुरुस्ती' },
+      { id: 2, titleEn: 'Participation in Sports / Physical Activities', titleMr: 'खेळ व शारीरिक उपक्रमात सहभाग' },
+      { id: 3, titleEn: 'Health & Hygiene Habits', titleMr: 'आरोग्य व स्वच्छतेच्या सवयी' },
+      { id: 4, titleEn: 'Healthy Lifestyle Choices', titleMr: 'निरोगी जीवनशैली निवडणे' },
+      { id: 5, titleEn: 'Positive Attitude', titleMr: 'सकारात्मक दृष्टिकोन' },
+    ],
+  },
+];
+
